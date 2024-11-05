@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.</declaration>
+	<template>
+		<name x="5" y="5">Jobber</name>
+		<declaration>// Place local declarations here.</declaration>
+		<location id="id0" x="-178" y="-8">
+			<name x="-229" y="-17">Begin</name>
+		</location>
+		<location id="id1" x="-51" y="-8">
+			<name x="-61" y="-42">Average</name>
+		</location>
+		<location id="id2" x="-51" y="-110">
+			<name x="-61" y="-144">Easy</name>
+		</location>
+		<location id="id3" x="-51" y="94">
+			<name x="-61" y="60">Hard</name>
+		</location>
+		<location id="id4" x="85" y="-110">
+			<name x="75" y="-144">Easy_Work</name>
+		</location>
+		<location id="id5" x="77" y="-25">
+			<name x="67" y="-59">Average_Work_With_Mallet</name>
+		</location>
+		<location id="id6" x="76" y="25">
+			<name x="68" y="34">Average_Work_With_Hammer</name>
+		</location>
+		<location id="id7" x="76" y="93">
+			<name x="59" y="102">Hard_Work_With_Hammer</name>
+		</location>
+		<location id="id8" x="-178" y="93">
+			<name x="-229" y="85">Done</name>
+		</location>
+		<branchpoint id="id9" x="-178" y="-8">
+		</branchpoint>
+		<branchpoint id="id10" x="-178" y="-8">
+		</branchpoint>
+		<init ref="id0"/>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id0"/>
+			<nail x="289" y="-110"/>
+			<nail x="289" y="-212"/>
+			<nail x="-178" y="-212"/>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id0"/>
+			<nail x="280" y="93"/>
+			<nail x="289" y="93"/>
+			<nail x="289" y="-212"/>
+			<nail x="-178" y="-212"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id0"/>
+			<nail x="289" y="25"/>
+			<nail x="289" y="-212"/>
+			<nail x="-178" y="-212"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id0"/>
+			<nail x="289" y="-25"/>
+			<nail x="289" y="-212"/>
+			<nail x="-178" y="-212"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id8"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id7"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id6"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id5"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id4"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id2"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id3"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id1"/>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+Jobber1 = Jobber();
+Jobber2 = Jobber();
+
+// List one or more processes to be composed into a system.
+system Jobber1. Jobber2;
+    </system>
+	<queries>
+		<query>
+			<formula></formula>
+			<comment></comment>
+		</query>
+	</queries>
+</nta>
