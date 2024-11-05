@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
 <nta>
-	<declaration>// Place global declarations here.</declaration>
+	<declaration>// Place global declarations here.
+chan get_mallet, get_hammer, put_mallet, put_hammer;
+
+const int MaxJobs = 10;
+int [0,MaxJobs] jobs;</declaration>
 	<template>
 		<name x="5" y="5">Jobber</name>
 		<declaration>// Place local declarations here.</declaration>
@@ -20,8 +24,8 @@
 		<location id="id4" x="85" y="-110">
 			<name x="75" y="-144">Easy_Work</name>
 		</location>
-		<location id="id5" x="77" y="-25">
-			<name x="67" y="-59">Average_Work_With_Mallet</name>
+		<location id="id5" x="76" y="-34">
+			<name x="66" y="-68">Average_Work_With_Mallet</name>
 		</location>
 		<location id="id6" x="76" y="25">
 			<name x="68" y="34">Average_Work_With_Hammer</name>
@@ -47,6 +51,7 @@
 		<transition>
 			<source ref="id7"/>
 			<target ref="id0"/>
+			<label kind="synchronisation" x="144" y="68">put_hammer!</label>
 			<nail x="280" y="93"/>
 			<nail x="289" y="93"/>
 			<nail x="289" y="-212"/>
@@ -55,6 +60,7 @@
 		<transition>
 			<source ref="id6"/>
 			<target ref="id0"/>
+			<label kind="synchronisation" x="144" y="0">put_hammer!</label>
 			<nail x="289" y="25"/>
 			<nail x="289" y="-212"/>
 			<nail x="-178" y="-212"/>
@@ -62,7 +68,8 @@
 		<transition>
 			<source ref="id5"/>
 			<target ref="id0"/>
-			<nail x="289" y="-25"/>
+			<label kind="synchronisation" x="144" y="-34">put_mallet!</label>
+			<nail x="289" y="-34"/>
 			<nail x="289" y="-212"/>
 			<nail x="-178" y="-212"/>
 		</transition>
@@ -73,14 +80,17 @@
 		<transition>
 			<source ref="id3"/>
 			<target ref="id7"/>
+			<label kind="synchronisation" x="-34" y="93">get_hammer!</label>
 		</transition>
 		<transition>
 			<source ref="id1"/>
 			<target ref="id6"/>
+			<label kind="synchronisation" x="-42" y="17">get_hammer!</label>
 		</transition>
 		<transition>
 			<source ref="id1"/>
 			<target ref="id5"/>
+			<label kind="synchronisation" x="-17" y="-59">get_mallet!</label>
 		</transition>
 		<transition>
 			<source ref="id2"/>
@@ -89,14 +99,62 @@
 		<transition>
 			<source ref="id0"/>
 			<target ref="id2"/>
+			<label kind="guard" x="-160" y="-93">jobs &lt; MaxJob</label>
+			<label kind="assignment" x="-161" y="-76">jobs++</label>
 		</transition>
 		<transition>
 			<source ref="id0"/>
 			<target ref="id3"/>
+			<label kind="assignment" x="-136" y="59">jobs++</label>
 		</transition>
 		<transition>
 			<source ref="id0"/>
 			<target ref="id1"/>
+			<label kind="assignment" x="-127" y="-8">jobs++</label>
+		</transition>
+	</template>
+	<template>
+		<name>Hammer</name>
+		<location id="id11" x="0" y="0">
+			<name x="-51" y="-17">Free</name>
+		</location>
+		<location id="id12" x="153" y="0">
+			<name x="170" y="-17">Taken</name>
+		</location>
+		<init ref="id11"/>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="34" y="68">put_hammer?</label>
+			<nail x="153" y="68"/>
+			<nail x="0" y="68"/>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id12"/>
+			<label kind="synchronisation" x="34" y="-25">get_hammer?</label>
+		</transition>
+	</template>
+	<template>
+		<name>Mallet</name>
+		<location id="id13" x="0" y="0">
+			<name x="-10" y="-34">Free</name>
+		</location>
+		<location id="id14" x="144" y="0">
+			<name x="134" y="-34">Taken</name>
+		</location>
+		<init ref="id13"/>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="34" y="51">put_mallet?</label>
+			<nail x="144" y="51"/>
+			<nail x="0" y="51"/>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="34" y="-25">get_mallet?</label>
 		</transition>
 	</template>
 	<system>// Place template instantiations here.
@@ -104,12 +162,27 @@ Jobber1 = Jobber();
 Jobber2 = Jobber();
 
 // List one or more processes to be composed into a system.
-system Jobber1. Jobber2;
+system Jobber1, Jobber2, Hammer, Mallet;
     </system>
 	<queries>
 		<query>
-			<formula></formula>
+			<formula>A[] Hammer.Taken == (Jobber1.Hard_Work_With_Hammer || Jobber2.Hard_Work_With_Hammer || 
+Jobber1.Average_Work_With_Hammer || Jobber2.Average_Work_With_Hammer)</formula>
 			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] Mallet.Taken == (Jobber1.Average_Work_With_Mallet ||
+Jobber2.Average_Work_With_Mallet)</formula>
+			<comment>mallet can only be used by jobber1 and jobber2</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; (Jobber1.Hard &amp;&amp; Jobber2.Hard)</formula>
+			<comment>can jobber1 and jobber2 be in Hard state</comment>
+		</query>
+		<query>
+			<formula>A[] not deadlock || (Jobber1.Done &amp;&amp; Jobber2.Done)
+</formula>
+			<comment>This tests deadlocks</comment>
 		</query>
 	</queries>
 </nta>

@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+const int MaxJobs = 10;
+int [0,MaxJobs] jobs;
+
+chan  put_mallet, put_hammer;
+urgent chan JobA , JobE, JobH, get_mallet, get_hammer;
+clock now;</declaration>
+	<template>
+		<name x="5" y="5">Jobber</name>
+		<declaration>// Place local declarations here.
+clock x;</declaration>
+		<location id="id0" x="-178" y="-8">
+			<name x="-229" y="-17">Begin</name>
+		</location>
+		<location id="id1" x="-51" y="-8">
+			<name x="-61" y="-42">Average</name>
+		</location>
+		<location id="id2" x="-51" y="-110">
+			<name x="-61" y="-144">Easy</name>
+		</location>
+		<location id="id3" x="-51" y="94">
+			<name x="-51" y="59">Hard</name>
+		</location>
+		<location id="id4" x="85" y="-110">
+			<name x="75" y="-144">Easy_Work</name>
+			<label kind="invariant" x="68" y="-93">x &lt;= 7</label>
+		</location>
+		<location id="id5" x="76" y="-34">
+			<name x="68" y="-76">Average_Work_With_Mallet</name>
+			<label kind="invariant" x="68" y="-25">x &lt;= 17</label>
+		</location>
+		<location id="id6" x="76" y="25">
+			<name x="68" y="34">Average_Work_With_Hammer</name>
+			<label kind="invariant" x="59" y="51">x &lt;= 12</label>
+		</location>
+		<location id="id7" x="76" y="93">
+			<name x="59" y="102">Hard_Work_With_Hammer</name>
+			<label kind="invariant" x="59" y="119">x &lt;= 22</label>
+		</location>
+		<branchpoint id="id8" x="-178" y="-8">
+		</branchpoint>
+		<branchpoint id="id9" x="-178" y="-8">
+		</branchpoint>
+		<init ref="id0"/>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id0"/>
+			<label kind="guard" x="161" y="-136">x &gt;= 5</label>
+			<nail x="289" y="-110"/>
+			<nail x="289" y="-212"/>
+			<nail x="-178" y="-212"/>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id0"/>
+			<label kind="guard" x="221" y="68">x &gt;= 20</label>
+			<label kind="synchronisation" x="127" y="68">put_hammer!</label>
+			<nail x="280" y="93"/>
+			<nail x="289" y="93"/>
+			<nail x="289" y="-212"/>
+			<nail x="-178" y="-212"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id0"/>
+			<label kind="guard" x="221" y="0">x &gt;= 10</label>
+			<label kind="synchronisation" x="127" y="0">put_hammer!</label>
+			<nail x="289" y="25"/>
+			<nail x="289" y="-212"/>
+			<nail x="-178" y="-212"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id0"/>
+			<label kind="guard" x="221" y="-34">x &gt;= 15</label>
+			<label kind="synchronisation" x="127" y="-34">put_mallet!</label>
+			<nail x="289" y="-34"/>
+			<nail x="289" y="-212"/>
+			<nail x="-178" y="-212"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-34" y="93">get_hammer!</label>
+			<label kind="assignment" x="8" y="68">x:=0</label>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-42" y="17">get_hammer!</label>
+			<label kind="assignment" x="25" y="-8">x:=0</label>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id5"/>
+			<label kind="synchronisation" x="-17" y="-59">get_mallet!</label>
+			<label kind="assignment" x="25" y="-25">x:=0</label>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id4"/>
+			<label kind="assignment" x="-8" y="-136">x:=0</label>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-144" y="-93">JobE?</label>
+			<label kind="assignment" x="-161" y="-76">jobs++</label>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-170" y="34">JobH?</label>
+			<label kind="assignment" x="-153" y="51">jobs++</label>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-127" y="-34">JobA?</label>
+			<label kind="assignment" x="-127" y="-8">jobs++</label>
+		</transition>
+	</template>
+	<template>
+		<name>Conveyor</name>
+		<location id="id10" x="17" y="8">
+			<name x="0" y="17">Start</name>
+		</location>
+		<location id="id11" x="17" y="-85">
+		</location>
+		<location id="id12" x="-93" y="-85">
+		</location>
+		<location id="id13" x="-93" y="8">
+		</location>
+		<location id="id14" x="-93" y="102">
+		</location>
+		<location id="id15" x="25" y="102">
+		</location>
+		<location id="id16" x="136" y="102">
+		</location>
+		<location id="id17" x="238" y="102">
+		</location>
+		<location id="id18" x="238" y="17">
+		</location>
+		<location id="id19" x="238" y="-85">
+		</location>
+		<location id="id20" x="127" y="-85">
+			<name x="110" y="-119">End</name>
+		</location>
+		<init ref="id10"/>
+		<transition>
+			<source ref="id19"/>
+			<target ref="id20"/>
+			<label kind="synchronisation" x="170" y="-110">JobA!</label>
+		</transition>
+		<transition>
+			<source ref="id18"/>
+			<target ref="id19"/>
+			<label kind="synchronisation" x="246" y="-42">JobA!</label>
+		</transition>
+		<transition>
+			<source ref="id17"/>
+			<target ref="id18"/>
+			<label kind="synchronisation" x="246" y="51">JobA!</label>
+		</transition>
+		<transition>
+			<source ref="id16"/>
+			<target ref="id17"/>
+			<label kind="synchronisation" x="161" y="102">JobE!</label>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="59" y="102">JobE!</label>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id15"/>
+			<label kind="synchronisation" x="-59" y="102">JobH!</label>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="-136" y="42">JobH!</label>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="-136" y="-51">JobH!</label>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id12"/>
+			<label kind="synchronisation" x="-59" y="-110">JobA!</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="25" y="-42">JobH!</label>
+		</transition>
+	</template>
+	<template>
+		<name>Hammer</name>
+		<location id="id21" x="0" y="0">
+			<name x="-51" y="-17">Free</name>
+		</location>
+		<location id="id22" x="153" y="0">
+			<name x="170" y="-17">Taken</name>
+		</location>
+		<init ref="id21"/>
+		<transition>
+			<source ref="id22"/>
+			<target ref="id21"/>
+			<label kind="synchronisation" x="34" y="68">put_hammer?</label>
+			<nail x="153" y="68"/>
+			<nail x="0" y="68"/>
+		</transition>
+		<transition>
+			<source ref="id21"/>
+			<target ref="id22"/>
+			<label kind="synchronisation" x="34" y="-25">get_hammer?</label>
+		</transition>
+	</template>
+	<template>
+		<name>Mallet</name>
+		<location id="id23" x="0" y="0">
+			<name x="-10" y="-34">Free</name>
+		</location>
+		<location id="id24" x="144" y="0">
+			<name x="134" y="-34">Taken</name>
+		</location>
+		<init ref="id23"/>
+		<transition>
+			<source ref="id24"/>
+			<target ref="id23"/>
+			<label kind="synchronisation" x="34" y="51">put_mallet?</label>
+			<nail x="144" y="51"/>
+			<nail x="0" y="51"/>
+		</transition>
+		<transition>
+			<source ref="id23"/>
+			<target ref="id24"/>
+			<label kind="synchronisation" x="34" y="-25">get_mallet?</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+Jobber1 = Jobber();
+Jobber2 = Jobber();
+
+// List one or more processes to be composed into a system.
+system Jobber1, Jobber2, Hammer, Mallet, Conveyor;
+    </system>
+	<queries>
+		<query>
+			<formula>E&lt;&gt; Conveyor.End &amp;&amp; Jobber1.Begin &amp;&amp; Jobber2.Begin</formula>
+			<comment>quikest it can be done</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; (now&lt;=100 &amp;&amp; Conveyor.End &amp;&amp; Jobber1.Begin &amp;&amp;
+Jobber2.Begin)</formula>
+			<comment>will it be done it time</comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; ((Conveyor.End &amp;&amp; Jobber1.Begin &amp;&amp; Jobber2.Begin &amp;&amp; jobs==10)|| Jobber1.Easy || Jobber2.Easy || Jobber1.x != 0 || Jobber2.x != 0)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; ((Conveyor.End &amp;&amp; Jobber1.Begin &amp;&amp; Jobber2.Begin &amp;&amp;
+jobs==10)|| Jobber1.Easy || Jobber2.Easy)</formula>
+			<comment>will the programm always finish</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; (Conveyor.End &amp;&amp; Jobber1.Begin &amp;&amp; Jobber2.Begin &amp;&amp;
+jobs==10)</formula>
+			<comment>have all the jobs been made</comment>
+		</query>
+		<query>
+			<formula>Jobber1.Average --&gt;
+(Jobber1.Average_Work_With_Mallet ||
+Jobber1.Average_Work_With_Hammer)</formula>
+			<comment>jobber1 will eventualy get to do a average work</comment>
+		</query>
+		<query>
+			<formula>A[] !((Jobber1.Average_Work_With_Hammer ||
+Jobber1.Hard_Work_With_Hammer) &amp;&amp;
+(Jobber2.Average_Work_With_Hammer ||
+Jobber2.Hard_Work_With_Hammer))</formula>
+			<comment>hammer can't be used by both at the same time</comment>
+		</query>
+		<query>
+			<formula>A[] Hammer.Taken == (Jobber1.Hard_Work_With_Hammer || Jobber2.Hard_Work_With_Hammer || 
+Jobber1.Average_Work_With_Hammer || Jobber2.Average_Work_With_Hammer)</formula>
+			<comment>hammer kan be taken when it has to be used</comment>
+		</query>
+		<query>
+			<formula>A[] Mallet.Taken == (Jobber1.Average_Work_With_Mallet ||
+Jobber2.Average_Work_With_Mallet)</formula>
+			<comment>mallet can only be used by jobber1 and jobber2</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; (Jobber1.Hard &amp;&amp; Jobber2.Hard)</formula>
+			<comment>can jobber1 and jobber2 be in Hard state</comment>
+		</query>
+		<query>
+			<formula>A[] not deadlock || (Conveyor.End &amp;&amp; Jobber1.Begin &amp;&amp;
+Jobber2.Begin)
+</formula>
+			<comment>This tests deadlocks</comment>
+		</query>
+	</queries>
+</nta>
